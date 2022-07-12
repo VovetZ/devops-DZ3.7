@@ -68,7 +68,7 @@ Inter-|   Receive                                                |  Transmit
     lo: 1355572    3819    0    0    0     0          0         0  1355572    3819    0    0    0     0       0          0
   eno1: 575578719  634288    0   14    0     0          0     12317 24878050  162861    0    0    0     0       0          0
 docker0:       0       0    0    0    0     0          0         0        0       0    0    0    0     0       0          0
-``
+```
 - networkctl list
 ```
 vk@vk-desktop:~$ networkctl list
