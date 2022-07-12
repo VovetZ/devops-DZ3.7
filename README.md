@@ -81,10 +81,48 @@ IDX LINK    TYPE     OPERATIONAL SETUP
 
 3 links listed.
 ```
+
+Для Windows мне известна только команда 'ipconfig /all'
+
 >2.    Какой протокол используется для распознавания соседа по сетевому интерфейсу? Какой пакет и команды есть в Linux для этого?
 ### Ответ
-Используется протокол
+Используется протокол Link Layer Discovery Protocol (LLDP) — протокол канального уровня, позволяющий сетевому оборудованию оповещать локальную сеть о своем существовании и характеристиках, а также собирать такие же оповещения, поступающие от соседнего оборудования. Протокол формально утвержден как IEEE standard 802.1AB-2009, в сентябре 2009 года, и является независимой от производителей сетевого оборудования заменой их патентованным протоколам, таким как Cisco Discovery Protocol, Extreme Discovery Protocol, Foundry Discovery Protocol и Nortel Discovery Protocol (последний также известен как SONMP).
+
+Правда, ничего интересного на домашней Ubuntu 22.04 я не обнаружил
 ```bash
+vk@vk-desktop:~$ sudo apt install lldpd
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+Suggested packages:
+  snmpd
+The following NEW packages will be installed:
+  lldpd
+0 upgraded, 1 newly installed, 0 to remove and 50 not upgraded.
+Need to get 193 kB of archives.
+After this operation, 558 kB of additional disk space will be used.
+Get:1 http://us.archive.ubuntu.com/ubuntu jammy/universe amd64 lldpd amd64 1.0.13-1 [193 kB]
+Fetched 193 kB in 1s (213 kB/s) 
+Selecting previously unselected package lldpd.
+(Reading database ... 356397 files and directories currently installed.)
+Preparing to unpack .../lldpd_1.0.13-1_amd64.deb ...
+Unpacking lldpd (1.0.13-1) ...
+Setting up lldpd (1.0.13-1) ...
+Created symlink /etc/systemd/system/multi-user.target.wants/lldpd.service → /lib/systemd/system/lldpd.service.
+Processing triggers for libc-bin (2.35-0ubuntu3) ...
+Processing triggers for man-db (2.10.2-1) ...
+vk@vk-desktop:~$ systemctl enable lldpd
+Synchronizing state of lldpd.service with SysV service script with /lib/systemd/systemd-sysv-install.
+Executing: /lib/systemd/systemd-sysv-install enable lldpd
+Failed to enable unit: Connection timed out
+vk@vk-desktop:~$ systemctl enable lldpd
+Synchronizing state of lldpd.service with SysV service script with /lib/systemd/systemd-sysv-install.
+Executing: /lib/systemd/systemd-sysv-install enable lldpd
+vk@vk-desktop:~$ systemctl start lldpd
+vk@vk-desktop:~$ lldpctl
+-------------------------------------------------------------------------------
+LLDP neighbors:
+-------------------------------------------------------------------------------
 ```
 
 >3.    Какая технология используется для разделения L2 коммутатора на несколько виртуальных сетей? Какой пакет и команды есть в Linux для этого? Приведите пример конфига.
