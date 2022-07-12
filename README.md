@@ -4,18 +4,82 @@
 
 >1.    Проверьте список доступных сетевых интерфейсов на вашем компьютере. Какие команды есть для этого в Linux и в Windows?
 ### Ответ
-Для Linix
+Для Linux
+- ifconfig (считается устаревшим) 
+```
+vk@vk-desktop:~$ ifconfig -a
+docker0: flags=4099<UP,BROADCAST,MULTICAST>  mtu 1500
+        inet 172.17.0.1  netmask 255.255.0.0  broadcast 172.17.255.255
+        ether 02:42:4e:47:1d:48  txqueuelen 0  (Ethernet)
+        RX packets 0  bytes 0 (0.0 B)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 0  bytes 0 (0.0 B)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
 
-```bash
-*** ifconfig (считается устаревшим)
-*** ip -br link show
-nmcli device status
-netstat -i
-В файле /proc/net/dev тоже содержится список всех сетевых интерфейсов, а также статистика их использования:
+eno1: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        inet 192.168.1.106  netmask 255.255.255.0  broadcast 192.168.1.255
+        inet6 fe80::f7b0:95f2:c528:a9bb  prefixlen 64  scopeid 0x20<link>
+        ether 00:22:4d:9a:2c:aa  txqueuelen 1000  (Ethernet)
+        RX packets 633948  bytes 575506181 (575.5 MB)
+        RX errors 0  dropped 14  overruns 0  frame 0
+        TX packets 162568  bytes 24836289 (24.8 MB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+        device interrupt 20  memory 0xfb300000-fb320000  
 
-cat /proc/net/dev
+lo: flags=73<UP,LOOPBACK,RUNNING>  mtu 65536
+        inet 127.0.0.1  netmask 255.0.0.0
+        inet6 ::1  prefixlen 128  scopeid 0x10<host>
+        loop  txqueuelen 1000  (Local Loopback)
+        RX packets 3795  bytes 1347204 (1.3 MB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 3795  bytes 1347204 (1.3 MB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
 
-networkctl list
+```
+-  ip -br link show 
+```
+vk@vk-desktop:~$ ip -br link show 
+lo               UNKNOWN        00:00:00:00:00:00 <LOOPBACK,UP,LOWER_UP> 
+eno1             UP             00:22:4d:9a:2c:aa <BROADCAST,MULTICAST,UP,LOWER_UP> 
+docker0          DOWN           02:42:4e:47:1d:48 <NO-CARRIER,BROADCAST,MULTICAST,UP> 
+```
+- nmcli device status
+```
+vk@vk-desktop:~$ nmcli device status
+DEVICE   TYPE      STATE                   CONNECTION         
+eno1     ethernet  connected               Wired connection 1 
+docker0  bridge    connected (externally)  docker0            
+lo       loopback  unmanaged               --     
+```
+- netstat -i
+```
+vk@vk-desktop:~$ netstat -i
+Kernel Interface table
+Iface      MTU    RX-OK RX-ERR RX-DRP RX-OVR    TX-OK TX-ERR TX-DRP TX-OVR Flg
+docker0   1500        0      0      0 0             0      0      0      0 BMU
+eno1      1500   634501      0     14 0        163040      0      0      0 BMRU
+lo       65536     3833      0      0 0          3833      0      0      0 LRU
+```
+- В файле /proc/net/dev тоже содержится список всех сетевых интерфейсов, а также статистика их использования:
+```
+vk@vk-desktop:~$ cat /proc/net/dev
+Inter-|   Receive                                                |  Transmit
+ face |bytes    packets errs drop fifo frame compressed multicast|bytes    packets errs drop fifo colls carrier compressed
+    lo: 1355572    3819    0    0    0     0          0         0  1355572    3819    0    0    0     0       0          0
+  eno1: 575578719  634288    0   14    0     0          0     12317 24878050  162861    0    0    0     0       0          0
+docker0:       0       0    0    0    0     0          0         0        0       0    0    0    0     0       0          0
+``
+- networkctl list
+```
+vk@vk-desktop:~$ networkctl list
+WARNING: systemd-networkd is not running, output will be incomplete.
+
+IDX LINK    TYPE     OPERATIONAL SETUP    
+  1 lo      loopback n/a         unmanaged
+  2 eno1    ether    n/a         unmanaged
+  3 docker0 bridge   n/a         unmanaged
+
+3 links listed.
 ```
 >2.    Какой протокол используется для распознавания соседа по сетевому интерфейсу? Какой пакет и команды есть в Linux для этого?
 ### Ответ
